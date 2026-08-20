@@ -1,0 +1,26 @@
+# Local runtime state and secrets
+data/
+*.db
+*.db-*
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+secrets/
+
+# Node and build intermediates
+node_modules/
+*.tsbuildinfo
+
+# Local binaries, logs, and editor files
+nexproxy
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# Deployment-only private overlays
+*.private.*
+*.secrets.*
