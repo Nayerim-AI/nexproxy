@@ -39,6 +39,17 @@ describe("Phase 0 interactions", () => {
       screen.getByText("Enter a valid fully qualified domain"),
     ).toBeInTheDocument();
   });
+  it("shows a live route preview and applies a service preset", async () => {
+    render(<App />);
+    await userEvent.click(screen.getByRole("button", { name: "Proxy Routes" }));
+    await userEvent.click(screen.getByRole("button", { name: "Add route" }));
+    await userEvent.click(screen.getByRole("button", { name: "Web app (HTTP)" }));
+    await userEvent.type(screen.getByLabelText("Domain"), "app.example.com");
+    await userEvent.type(screen.getByLabelText("Backend host"), "10.0.0.10");
+    expect(screen.getByRole("region", { name: "Route preview" })).toHaveTextContent("https://app.example.com");
+    expect(screen.getByRole("region", { name: "Route preview" })).toHaveTextContent("http://10.0.0.10:8080");
+    expect(screen.getByRole("region", { name: "Route preview" })).toHaveTextContent("DNS record will be created");
+  });
   it("closes modal with Escape", async () => {
     render(<App />);
     await userEvent.click(screen.getByRole("button", { name: "Proxy Routes" }));

@@ -1019,10 +1019,19 @@ function RouteModal({
         aria-label={route ? "Edit route" : "Add route"}
       >
         <h2>{route ? "Edit" : "Create"} Proxy Route</h2>
+        {!route && <section className="presets" aria-label="Route presets">
+          <p className="muted">Start with a preset, then review the route before saving.</p>
+          <div className="actions">
+            <button type="button" onClick={()=>setV({...v,target:{scheme:'http',host:v.target.host,port:8080},https:true,createDns:true})}>Web app (HTTP)</button>
+            <button type="button" onClick={()=>setV({...v,target:{scheme:'https',host:v.target.host,port:443},https:true,createDns:true})}>Secure backend (HTTPS)</button>
+            <button type="button" onClick={()=>setV({...v,target:{scheme:'http',host:v.target.host,port:80},https:false,createDns:false})}>Internal service</button>
+          </div>
+        </section>}
         {fields.map((f) => (
           <label key={f.key}>
             {f.label}
             <input
+              aria-label={f.label}
               value={f.value}
               onChange={(e) => {
                 setTouched(true);
@@ -1066,6 +1075,15 @@ function RouteModal({
           />{" "}
           Create DNS record
         </label>
+        <section className="route-preview" aria-label="Route preview">
+          <h3>Route preview</h3>
+          <dl>
+            <div><dt>Public address</dt><dd><code>{v.domain ? `${v.https?'https':'http'}://${v.domain}` : 'Enter a domain'}</code></dd></div>
+            <div><dt>Backend</dt><dd><code>{v.target.host ? `${v.target.scheme}://${v.target.host}:${v.target.port}` : 'Enter a backend host'}</code></dd></div>
+            <div><dt>DNS</dt><dd>{v.createDns ? 'DNS record will be created' : 'DNS will not be changed'}</dd></div>
+            <div><dt>TLS</dt><dd>{v.https ? 'HTTPS and TLS will be enabled' : 'HTTP only; TLS will not be configured'}</dd></div>
+          </dl>
+        </section>
         {op !== "idle" && <OperationProgress op={op} result={operationResult} />}{" "}
         {op === "error" && (
           <p className="error">
